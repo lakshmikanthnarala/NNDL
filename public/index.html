@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#111a1d">
+    <meta name="description" content="SignSpeak is a lightweight ASL alphabet practice workspace.">
+    <title>SignSpeak — ASL alphabet studio</title>
+    <link rel="stylesheet" href="/styles.css">
+    <script src="/script.js" defer></script>
+  </head>
+  <body>
+    <header class="site-header">
+      <a class="brand" href="#home" aria-label="SignSpeak home">
+        <span class="brand-mark" aria-hidden="true">S</span>
+        <span><strong>SignSpeak</strong><small>ASL ALPHABET STUDIO</small></span>
+      </a>
+      <nav class="site-nav" aria-label="Main navigation">
+        <a href="#home">Overview</a>
+        <a href="#workspace">Image preview</a>
+        <a href="#builder">Text builder</a>
+        <a href="#model">Project info</a>
+      </nav>
+      <span class="site-status"><span></span> STATIC SITE</span>
+    </header>
+
+    <main>
+      <section class="page-section hero" id="home">
+        <div class="hero-copy">
+          <p class="eyebrow">A SIMPLE ASL ALPHABET WORKSPACE</p>
+          <h1>Make room for<br><em>every handshape.</em></h1>
+          <p class="hero-description">
+            Preview a sign image, explore the static alphabet, and compose text one
+            letter at a time. This lightweight version runs directly in your browser.
+          </p>
+          <a class="button button-primary" href="#workspace">Open image preview <span aria-hidden="true">→</span></a>
+          <p class="small-note">J and Z are not included because their signs use movement.</p>
+        </div>
+        <div class="hero-art" aria-hidden="true">
+          <div class="orbit orbit-one"></div>
+          <div class="orbit orbit-two"></div>
+          <div class="hero-letter">A<span>.</span></div>
+          <p>24 STATIC LETTERS</p>
+        </div>
+      </section>
+
+      <section class="page-section" id="workspace">
+        <div class="section-heading">
+          <div><p class="eyebrow">01 / IMAGE PREVIEW</p><h2>Bring a sign into view.</h2></div>
+          <span class="status-pill">PREVIEW ONLY</span>
+        </div>
+        <div class="workspace-grid">
+          <div class="panel input-panel">
+            <div class="panel-heading">
+              <div><span class="step-number">A</span><h3>Choose an image source</h3></div>
+              <p>Use a camera snapshot or select an image from your device.</p>
+            </div>
+            <div class="camera-frame">
+              <video id="camera-video" autoplay playsinline muted hidden></video>
+              <img id="image-preview" alt="Selected sign image preview" hidden>
+              <div class="empty-preview" id="empty-preview">
+                <span class="preview-icon" aria-hidden="true">↗</span>
+                <strong>Your image preview will appear here</strong>
+                <span>Choose an image or start your camera.</span>
+              </div>
+            </div>
+            <canvas id="capture-canvas" hidden></canvas>
+            <div class="input-actions">
+              <button class="button button-secondary" id="camera-start" type="button">Start camera</button>
+              <button class="button button-secondary" id="camera-capture" type="button" disabled>Take snapshot</button>
+              <button class="button button-quiet" id="camera-stop" type="button" disabled>Stop camera</button>
+              <label class="button button-secondary file-button" for="image-file">Choose image</label>
+              <input id="image-file" type="file" accept="image/png,image/jpeg">
+            </div>
+            <p class="feedback" id="image-status" role="status" aria-live="polite">
+              Camera access is requested only when you start it. Images stay in this browser.
+            </p>
+          </div>
+          <aside class="panel note-panel">
+            <span class="note-icon" aria-hidden="true">i</span>
+            <h3>This version does not recognize signs.</h3>
+            <p>
+              The Cloudflare Pages site is plain HTML, CSS, and JavaScript. It can
+              preview images, but it does not run the Python model or make predictions.
+            </p>
+            <a href="#model">Why is that? <span aria-hidden="true">↗</span></a>
+          </aside>
+        </div>
+      </section>
+
+      <section class="page-section builder-section" id="builder">
+        <div class="section-heading">
+          <div><p class="eyebrow">02 / TEXT BUILDER</p><h2>Compose at your pace.</h2></div>
+          <span class="section-hint">Choose letters manually</span>
+        </div>
+        <div class="builder-grid">
+          <div class="panel alphabet-panel">
+            <div class="panel-heading">
+              <div><span class="step-number">B</span><h3>Static alphabet</h3></div>
+              <p>Select a letter to add it to your message.</p>
+            </div>
+            <div class="alphabet-grid" id="alphabet-grid" aria-label="ASL static alphabet"></div>
+            <p class="small-note">J and Z are motion-based signs and are not represented in this static set.</p>
+          </div>
+          <div class="panel message-panel">
+            <div class="message-heading"><h3>Your message</h3><span id="character-count">0 characters</span></div>
+            <label class="visually-hidden" for="built-text">Composed message</label>
+            <textarea id="built-text" rows="5" placeholder="Choose letters from the alphabet…"></textarea>
+            <div class="message-actions">
+              <button class="button button-secondary" id="add-space" type="button">Add space</button>
+              <button class="button button-quiet" id="delete-last" type="button">Delete last</button>
+              <button class="button button-quiet" id="clear-text" type="button">Clear</button>
+              <button class="button button-primary" id="copy-text" type="button">Copy text</button>
+              <button class="button button-secondary" id="download-text" type="button">Download</button>
+            </div>
+            <p class="feedback" id="copy-status" role="status" aria-live="polite"></p>
+          </div>
+        </div>
+      </section>
+
+      <section class="page-section model-section" id="model">
+        <div class="section-heading">
+          <div><p class="eyebrow">03 / PROJECT INFO</p><h2>A small, transparent prototype.</h2></div>
+          <span class="section-hint">Sign Language MNIST</span>
+        </div>
+        <div class="info-grid">
+          <article class="panel metric-panel">
+            <div class="panel-heading">
+              <div><span class="step-number">C</span><h3>Training results</h3></div>
+              <p>Measured results from the included trained model.</p>
+            </div>
+            <div class="metrics" id="metrics" aria-live="polite">
+              <p class="feedback">Loading project results…</p>
+            </div>
+          </article>
+          <article class="panel about-panel">
+            <p class="eyebrow">ABOUT THIS VERSION</p>
+            <h3>Static front end, no server required.</h3>
+            <p>
+              This Pages build is a lightweight project showcase and practice
+              interface. The original TensorFlow training scripts and model remain
+              in the repository for experimentation; they are not part of this site.
+            </p>
+            <ul>
+              <li>Recognizes neither images nor live camera input.</li>
+              <li>Covers 24 static classes: A–I and K–Y.</li>
+              <li>Does not interpret motion, words, or sign-language grammar.</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+    </main>
+
+    <footer class="site-footer">
+      <a class="brand" href="#home"><span class="brand-mark" aria-hidden="true">S</span><span><strong>SignSpeak</strong><small>ASL ALPHABET STUDIO</small></span></a>
+      <span>An educational prototype · Static site for Cloudflare Pages</span>
+    </footer>
+  </body>
+</html>

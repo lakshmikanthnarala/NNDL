@@ -2,6 +2,8 @@
 .keras/
 .matplotlib/
 .uv-python/
+node_modules/
+.wrangler/
 .uv-cache/
 __pycache__/
 *.pyc

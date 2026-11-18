@@ -215,7 +215,12 @@ def main() -> None:
         "test_examples": int(len(test_images)),
         "epochs_completed": len(history_data["accuracy"]),
     }
-    with (OUTPUT_DIR / "evaluation_results.json").open("w", encoding="utf-8") as file:
+    metrics_path = OUTPUT_DIR / "evaluation_results.json"
+    with metrics_path.open("w", encoding="utf-8") as file:
+        json.dump(metrics, file, indent=2)
+    with (ROOT / "public" / "data" / "evaluation_results.json").open(
+        "w", encoding="utf-8"
+    ) as file:
         json.dump(metrics, file, indent=2)
 
     mapping = {
