@@ -7,13 +7,15 @@ import base64
 import binascii
 import json
 import threading
+import time
 from http.server import SimpleHTTPRequestHandler, ThreadingHTTPServer
 from io import BytesIO
 from pathlib import Path
 
 from PIL import Image, ImageOps
 
-from predict import DEFAULT_MODEL, load_predictor, predict_image
+from predict import DEFAULT_MODEL, load_predictor, predict_image_details
+from utils.class_mapping import class_for_index
 
 
 ROOT = Path(__file__).resolve().parent
@@ -81,7 +83,14 @@ class SignSpeakHandler(SimpleHTTPRequestHandler):
 
         try:
             with PREDICTION_LOCK:
-                letter, confidence, _ = predict_image(image, MODEL)
+                started = time.perf_counter()
+                letter, confidence, _, probabilities = predict_image_details(image, MODEL)
+                latency_ms = (time.perf_counter() - started) * 1000
+                top_indices = probabilities.argsort()[-3:][::-1]
+                top_predictions = [
+                    {"label": class_for_index(int(index)), "confidence": float(probabilities[index])}
+                    for index in top_indices
+                ]
         except ValueError as error:
             self._send_json(400, {"error": str(error)})
             return
@@ -89,7 +98,7 @@ class SignSpeakHandler(SimpleHTTPRequestHandler):
             self._send_json(500, {"error": str(error)})
             return
 
-        self._send_json(200, {"letter": letter, "confidence": confidence})
+        self._send_json(200, {"letter": letter, "confidence": confidence, "top_predictions": top_predictions, "latency_ms": latency_ms})
 
     @staticmethod
     def _decode_image(data_url: str) -> Image.Image:

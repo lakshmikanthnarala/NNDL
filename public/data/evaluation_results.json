@@ -1,10 +1,13 @@
 {
-  "training_accuracy": 0.9408639073371887,
-  "validation_accuracy": 0.9980577826499939,
-  "testing_accuracy": 0.9767150282859802,
-  "testing_loss": 0.0848865956068039,
-  "number_of_classes": 24,
-  "training_examples": 27455,
-  "test_examples": 7172,
-  "epochs_completed": 20
+    "training_accuracy":  0.9408639073371887,
+    "validation_accuracy":  0.9980577826499939,
+    "testing_accuracy":  0.9767150282859802,
+    "testing_loss":  0.0848865956068039,
+    "number_of_classes":  24,
+    "training_examples":  27455,
+    "test_examples":  7172,
+    "epochs_completed":  20,
+    "macro_precision":  0.979,
+    "macro_recall":  0.9761,
+    "macro_f1":  0.9764
 }

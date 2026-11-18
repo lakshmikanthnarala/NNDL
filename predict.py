@@ -47,10 +47,16 @@ def load_predictor(model_path: str | Path = DEFAULT_MODEL):
 
 def predict_image(image: Image.Image | np.ndarray, model) -> tuple[str, float, np.ndarray]:
     """Return predicted letter, softmax confidence, and normalized 28 × 28 image."""
+    letter, confidence, normalized, _ = predict_image_details(image, model)
+    return letter, confidence, normalized
+
+
+def predict_image_details(image: Image.Image | np.ndarray, model):
+    """Return the prediction, normalized input, and model probabilities."""
     tensor = preprocess_image(image)
     probabilities = np.asarray(model.predict(tensor, verbose=0))
     if probabilities.shape != (1, len(CLASSES)) or not np.isfinite(probabilities).all():
         raise RuntimeError("The model returned invalid prediction probabilities.")
     index = int(np.argmax(probabilities[0]))
     confidence = float(probabilities[0, index])
-    return class_for_index(index), confidence, tensor[0, :, :, 0]
+    return class_for_index(index), confidence, tensor[0, :, :, 0], probabilities[0]
