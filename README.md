@@ -68,6 +68,21 @@ Start the website by double-clicking `run_website.bat`, or run this command from
 
 Streamlit opens the local application in your browser at `http://localhost:8501`. Keep the terminal window open while using the site. The website can open before training, but predictions require the trained model; add the dataset CSVs and run `python train_model.py` first. Allow camera access to use **Webcam capture**. The app processes one captured image only; it does not claim continuous real-time recognition. Image upload accepts PNG, JPG, and JPEG.
 
+## Deploy as a website
+
+The repository includes a Docker configuration and hosted-platform startup files. The trained model and class mapping are committed under `models/`, so no training step is required by the deployed website.
+
+Build and run with Docker:
+
+```powershell
+docker build -t signspeak .
+docker run --rm -p 8501:8501 -e PORT=8501 signspeak
+```
+
+Then open `http://localhost:8501`.
+
+For Streamlit Community Cloud, create a new app from this repository and set the main file to `app.py`. For Render, use `render.yaml` or create a Docker web service; for Railway or similar platforms, the included `Dockerfile` and `PORT` handling work directly. Streaming camera input requires HTTPS, which hosted platforms normally provide.
+
 The same install, training, and run commands work in Google Colab after uploading or mounting the two CSV files into `dataset/`. In Colab, use `!python train_model.py` and `!streamlit run app.py`; expose Streamlit with an approved Colab-compatible tunnel if a browser preview is needed.
 
 ## Test
