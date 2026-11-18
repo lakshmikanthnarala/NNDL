@@ -1,0 +1,1 @@
+"""Shared SignSpeak utilities."""
