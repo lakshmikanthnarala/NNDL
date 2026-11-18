@@ -3,7 +3,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "wrangler pages dev public",
+    "dev": "python server.py",
+    "pages:dev": "wrangler pages dev public",
     "deploy": "wrangler pages deploy public"
   },
   "devDependencies": {

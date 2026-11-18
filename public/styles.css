@@ -28,6 +28,7 @@ a { color: inherit; }
 .site-nav a:hover, .site-nav a:focus-visible { color: var(--teal); }
 .site-status, .status-pill { display: inline-flex; align-items: center; gap: 8px; border: 1px solid var(--line); border-radius: 999px; padding: 8px 11px; color: #4e5e5e; font: 10px var(--mono); letter-spacing: .07em; white-space: nowrap; }
 .site-status span { width: 7px; height: 7px; border-radius: 50%; background: #79b947; }
+.site-status.offline span { background: #c65a4a; }
 main { max-width: 1440px; margin: auto; padding: 0 6vw; }
 .page-section { padding: 76px 0; border-bottom: 1px solid var(--line); }
 .hero { position: relative; display: grid; min-height: 488px; grid-template-columns: 1.15fr .85fr; align-items: center; overflow: hidden; }
@@ -76,6 +77,12 @@ h2 { margin-bottom: 0; font-size: clamp(26px, 3.4vw, 40px); letter-spacing: -.05
 .file-button { position: relative; }
 #image-file { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0, 0, 0, 0); white-space: nowrap; clip-path: inset(50%); }
 .feedback { min-height: 16px; margin: 12px 0 0; color: var(--muted); font-size: 11px; line-height: 1.5; }
+.prediction-result { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-top: 16px; border: 1px solid var(--line); border-radius: 8px; padding: 14px; background: #f4f7f1; }
+.prediction-result[hidden] { display: none; }
+.prediction-result > div { display: grid; grid-template-columns: auto auto; align-items: baseline; gap: 4px 10px; }
+.prediction-result > div > span { grid-column: 1 / -1; color: var(--muted); font: 9px var(--mono); letter-spacing: .08em; }
+.prediction-result strong { color: var(--teal); font: 700 30px var(--mono); }
+.prediction-result small { color: var(--muted); font-size: 11px; }
 .note-panel { align-self: stretch; background: #e9f0e5; }
 .note-icon { display: grid; width: 29px; height: 29px; place-items: center; border: 1px solid #b8cdb5; border-radius: 50%; color: var(--teal); font: 13px var(--mono); }
 .note-panel h3 { max-width: 220px; margin: 26px 0 12px; font-size: 22px; letter-spacing: -.04em; line-height: 1.2; }
@@ -138,6 +145,7 @@ h2 { margin-bottom: 0; font-size: clamp(26px, 3.4vw, 40px); letter-spacing: -.05
   .input-actions .button { flex: 1 1 42%; }
   .alphabet-grid { grid-template-columns: repeat(4, minmax(34px, 1fr)); }
   .metrics { grid-template-columns: 1fr; }
+  .prediction-result { align-items: flex-start; flex-direction: column; }
   .metric strong { font-size: 22px; }
   .message-actions #copy-text { margin-left: 0; }
   .site-footer { align-items: flex-start; flex-direction: column; padding: 20px 5vw; }

@@ -1,42 +1,45 @@
 # SignSpeak
 
-SignSpeak is a small ASL alphabet project with a static website and an optional
-Python model-training pipeline.
+SignSpeak is an ASL alphabet project with a browser interface connected to a
+local Python prediction service and model-training pipeline.
 
-## Website
-
-The Cloudflare Pages site is plain HTML, CSS, and JavaScript in `public/`. It
-provides a responsive project overview, camera/image preview, manual alphabet
-text builder, and saved training metrics. It does **not** run the Python model or
-recognize signs. The original model and training scripts remain available for
-experimentation, but are not part of the deployed site.
-
-### Run locally
+## Run locally
 
 On Windows, double-click `run_website.bat`, then open
-`http://localhost:8000`. Or run from the project directory:
+`http://127.0.0.1:8000`. The launcher uses the project virtual environment
+when available. To set up the Python environment manually:
 
 ```powershell
-python -m http.server 8000 --directory public
+py -3.11 -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -r requirements.txt
+python server.py
 ```
 
-For Cloudflare Pages development, install the Wrangler development dependency
-and start the local preview:
+The server loads the included model and serves both the website and prediction
+API on the same local port. Selecting an image or taking a camera snapshot
+sends it to the model on this computer; predictions can be added directly to
+the text builder. Images are not uploaded to a remote server. To run through
+npm, activate the Python environment first and use `npm run dev`.
+
+The model is a 24-class CNN trained on Sign Language MNIST. J and Z are
+excluded because they require movement. Predictions on ordinary photos or
+camera images are experimental: the training images are standardized grayscale
+hand crops, so held-out dataset accuracy does not guarantee real-world
+recognition accuracy. Camera access requires browser permission.
+
+## Cloudflare Pages preview/deployment
+
+Cloudflare Pages deploys the static files only and does not include the Python
+prediction service. Use the local app above for model predictions. To preview
+the static Pages build:
 
 ```powershell
 npm install
-npm run dev
+npm run pages:dev
 ```
 
-### Deploy to Cloudflare Pages
-
-Connect the repository to Cloudflare Pages with these build settings:
-
-- Framework preset: **None**
-- Build command: leave blank
-- Build output directory: `public`
-
-Alternatively, authenticate with Wrangler and deploy from the project root:
+To deploy the static Pages build:
 
 ```powershell
 npm install
@@ -44,16 +47,10 @@ npx wrangler login
 npm run deploy
 ```
 
-The Pages build contains only the static website and its metrics JSON. It does
-not require Docker, a Python runtime, or a server-side function. Camera preview
-requires browser permission and a secure context; `localhost` and deployed
-HTTPS sites are supported.
+Configure Pages with framework preset **None**, no build command, and `public`
+as the build output directory.
 
-## Optional model training
-
-The model is a 24-class CNN trained on Sign Language MNIST. J and Z are
-excluded because they require movement. The tracked `dataset/` CSVs are used
-for training and held-out evaluation.
+## Model training
 
 Use Python 3.10–3.11 for the TensorFlow compatibility range:
 
@@ -78,16 +75,17 @@ not a guarantee of accuracy on real-world images.
 ## Project structure
 
 ```text
-public/              Static Cloudflare Pages website
+public/              Browser interface, metrics, and styles
   data/              Metrics displayed by the site
 dataset/             Sign Language MNIST CSV files
 models/              Trained Keras model and label mapping
 outputs/             Training metrics, reports, and plots
 tests/               Python model and preprocessing tests
+server.py            Local website server and prediction API
 train_model.py       Optional CNN training and evaluation
 predict.py           Python image prediction helper
 preprocessing.py     Python image preprocessing
-requirements.txt     Optional Python training dependencies
+requirements.txt     Python model and training dependencies
 ```
 
 This is an educational static alphabet project, not a continuous sign-language

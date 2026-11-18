@@ -8,8 +8,15 @@ const video = document.querySelector("#camera-video");
 const canvas = document.querySelector("#capture-canvas");
 const imageStatus = document.querySelector("#image-status");
 const copyStatus = document.querySelector("#copy-status");
+const predictionResult = document.querySelector("#prediction-result");
+const predictedLetter = document.querySelector("#predicted-letter");
+const predictionConfidence = document.querySelector("#prediction-confidence");
+const addPrediction = document.querySelector("#add-prediction");
+const serviceStatus = document.querySelector("#service-status");
 let cameraStream;
 let previewUrl;
+let predictionRequest = 0;
+let currentPrediction;
 
 for (const letter of letters) {
   const button = document.createElement("button");
@@ -61,10 +68,14 @@ imageFile.addEventListener("change", () => {
   if (previewUrl) URL.revokeObjectURL(previewUrl);
   previewUrl = URL.createObjectURL(file);
   showPreview(previewUrl, "Selected sign image preview");
-  imageStatus.textContent = `Previewing ${file.name}. No image recognition is performed.`;
+  recognizeImage(previewUrl, file.name);
 });
 
 document.querySelector("#camera-start").addEventListener("click", async () => {
+  predictionRequest += 1;
+  currentPrediction = undefined;
+  predictionResult.hidden = true;
+  addPrediction.disabled = true;
   if (!navigator.mediaDevices?.getUserMedia) {
     imageStatus.textContent = "Camera access is not available in this browser or page context.";
     return;
@@ -100,14 +111,24 @@ document.querySelector("#camera-capture").addEventListener("click", () => {
     previewUrl = undefined;
   }
   showPreview(canvas.toDataURL("image/png"), "Camera snapshot preview");
-  imageStatus.textContent = "Snapshot saved in this page for preview only. No recognition is performed.";
+  recognizeImage(imagePreview.src, "camera snapshot");
 });
 
 document.querySelector("#camera-stop").addEventListener("click", () => {
+  predictionRequest += 1;
+  currentPrediction = undefined;
+  predictionResult.hidden = true;
+  addPrediction.disabled = true;
   stopCamera();
   imagePreview.hidden = true;
   emptyPreview.hidden = false;
   imageStatus.textContent = "Camera stopped.";
+});
+
+addPrediction.addEventListener("click", () => {
+  if (!currentPrediction) return;
+  insertText(currentPrediction);
+  imageStatus.textContent = `Added ${currentPrediction} to your message.`;
 });
 
 document.querySelector("#add-space").addEventListener("click", () => insertText(" "));
@@ -156,6 +177,63 @@ document.querySelector("#download-text").addEventListener("click", () => {
   copyStatus.textContent = "Message downloaded.";
 });
 
+async function recognizeImage(source, description) {
+  const requestId = ++predictionRequest;
+  currentPrediction = undefined;
+  predictionResult.hidden = true;
+  addPrediction.disabled = true;
+  imageStatus.textContent = `Preparing ${description} for the local model…`;
+  try {
+    const image = new Image();
+    image.src = source;
+    await image.decode();
+    const scale = Math.min(1, 1024 / Math.max(image.naturalWidth, image.naturalHeight));
+    canvas.width = Math.max(1, Math.round(image.naturalWidth * scale));
+    canvas.height = Math.max(1, Math.round(image.naturalHeight * scale));
+    const context = canvas.getContext("2d");
+    if (!context) throw new Error("Could not prepare this image for prediction.");
+    context.drawImage(image, 0, 0, canvas.width, canvas.height);
+
+    const response = await fetch("/api/predict", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ image: canvas.toDataURL("image/jpeg", 0.9) }),
+    });
+    const result = await response.json().catch(() => ({}));
+    if (!response.ok) {
+      throw new Error(result.error || `Local prediction service returned ${response.status}.`);
+    }
+    if (!letters.includes(result.letter) || !Number.isFinite(result.confidence)) {
+      throw new Error("The local model returned an invalid prediction.");
+    }
+    if (requestId !== predictionRequest) return;
+
+    currentPrediction = result.letter;
+    predictedLetter.textContent = result.letter;
+    predictionConfidence.textContent = `${(result.confidence * 100).toFixed(1)}% confidence`;
+    predictionResult.hidden = false;
+    addPrediction.disabled = false;
+    imageStatus.textContent = "Prediction complete. Add the letter to your message or try another image.";
+  } catch (error) {
+    if (requestId !== predictionRequest) return;
+    imageStatus.textContent = `Could not get a prediction: ${error.message}`;
+  }
+}
+
+async function loadServiceStatus() {
+  try {
+    const response = await fetch("/api/health");
+    if (!response.ok) throw new Error(`Local service unavailable (${response.status}).`);
+    const health = await response.json();
+    if (!health.model) throw new Error("Local model is not loaded.");
+    serviceStatus.lastChild.textContent = " MODEL ONLINE";
+    serviceStatus.classList.remove("offline");
+  } catch {
+    serviceStatus.lastChild.textContent = " MODEL OFFLINE";
+    serviceStatus.classList.add("offline");
+  }
+}
+
 async function loadMetrics() {
   const container = document.querySelector("#metrics");
   try {
@@ -185,4 +263,5 @@ async function loadMetrics() {
 
 window.addEventListener("pagehide", stopCamera);
 updateCharacterCount();
+loadServiceStatus();
 loadMetrics();

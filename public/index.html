@@ -21,7 +21,7 @@
         <a href="#builder">Text builder</a>
         <a href="#model">Project info</a>
       </nav>
-      <span class="site-status"><span></span> STATIC SITE</span>
+      <span class="site-status" id="service-status" aria-live="polite"><span></span> CHECKING MODEL</span>
     </header>
 
     <main>
@@ -30,8 +30,8 @@
           <p class="eyebrow">A SIMPLE ASL ALPHABET WORKSPACE</p>
           <h1>Make room for<br><em>every handshape.</em></h1>
           <p class="hero-description">
-            Preview a sign image, explore the static alphabet, and compose text one
-            letter at a time. This lightweight version runs directly in your browser.
+            Preview a sign image, get a prediction from the model running on this
+            computer, and compose text one letter at a time.
           </p>
           <a class="button button-primary" href="#workspace">Open image preview <span aria-hidden="true">→</span></a>
           <p class="small-note">J and Z are not included because their signs use movement.</p>
@@ -47,7 +47,7 @@
       <section class="page-section" id="workspace">
         <div class="section-heading">
           <div><p class="eyebrow">01 / IMAGE PREVIEW</p><h2>Bring a sign into view.</h2></div>
-          <span class="status-pill">PREVIEW ONLY</span>
+          <span class="status-pill">LOCAL MODEL</span>
         </div>
         <div class="workspace-grid">
           <div class="panel input-panel">
@@ -73,17 +73,21 @@
               <input id="image-file" type="file" accept="image/png,image/jpeg">
             </div>
             <p class="feedback" id="image-status" role="status" aria-live="polite">
-              Camera access is requested only when you start it. Images stay in this browser.
+              Start the camera or choose an image to ask the local model for a prediction.
             </p>
+            <div class="prediction-result" id="prediction-result" aria-live="polite" hidden>
+              <div><span>MODEL PREDICTION</span><strong id="predicted-letter"></strong><small id="prediction-confidence"></small></div>
+              <button class="button button-secondary" id="add-prediction" type="button" disabled>Add letter to message</button>
+            </div>
           </div>
           <aside class="panel note-panel">
             <span class="note-icon" aria-hidden="true">i</span>
-            <h3>This version does not recognize signs.</h3>
+            <h3>Predictions run on this computer.</h3>
             <p>
-              The Cloudflare Pages site is plain HTML, CSS, and JavaScript. It can
-              preview images, but it does not run the Python model or make predictions.
+              The browser sends the selected image or camera snapshot to the local
+              Python service. Images are not uploaded to a remote server.
             </p>
-            <a href="#model">Why is that? <span aria-hidden="true">↗</span></a>
+            <a href="#model">About the model <span aria-hidden="true">↗</span></a>
           </aside>
         </div>
       </section>
@@ -91,7 +95,7 @@
       <section class="page-section builder-section" id="builder">
         <div class="section-heading">
           <div><p class="eyebrow">02 / TEXT BUILDER</p><h2>Compose at your pace.</h2></div>
-          <span class="section-hint">Choose letters manually</span>
+          <span class="section-hint">Add predictions or choose letters manually</span>
         </div>
         <div class="builder-grid">
           <div class="panel alphabet-panel">
@@ -135,14 +139,14 @@
           </article>
           <article class="panel about-panel">
             <p class="eyebrow">ABOUT THIS VERSION</p>
-            <h3>Static front end, no server required.</h3>
+            <h3>Browser interface connected to a local Python model.</h3>
             <p>
-              This Pages build is a lightweight project showcase and practice
-              interface. The original TensorFlow training scripts and model remain
-              in the repository for experimentation; they are not part of this site.
+              The local server delivers this page and runs the included TensorFlow
+              classifier. Recognition is experimental: this model was trained on
+              Sign Language MNIST, not ordinary camera photos.
             </p>
             <ul>
-              <li>Recognizes neither images nor live camera input.</li>
+              <li>Runs predictions locally; images stay on this computer.</li>
               <li>Covers 24 static classes: A–I and K–Y.</li>
               <li>Does not interpret motion, words, or sign-language grammar.</li>
             </ul>
@@ -153,7 +157,7 @@
 
     <footer class="site-footer">
       <a class="brand" href="#home"><span class="brand-mark" aria-hidden="true">S</span><span><strong>SignSpeak</strong><small>ASL ALPHABET STUDIO</small></span></a>
-      <span>An educational prototype · Static site for Cloudflare Pages</span>
+      <span>An educational prototype · Local model inference</span>
     </footer>
   </body>
 </html>
