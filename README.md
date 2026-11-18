@@ -31,3 +31,20 @@ Vite writes the static site to `dist/`; Cloudflare Pages serves that directory. 
 ## Existing training artifacts
 
 The repository's existing Keras model is a 24-class grayscale image classifier and does not match this landmark-based ONNX input. It is not substituted for the uploaded ONNX model. Its training and evaluation files remain available separately in the repository.
+
+## Runtime flow
+
+```mermaid
+flowchart LR
+  Camera[Webcam] --> MP[Bundled MediaPipe Hand Landmarker]
+  MP --> Points[21 XYZ landmarks]
+  Points --> Prep[Wrist-relative normalization]
+  Prep --> ONNX[Bundled ONNX Runtime Web / WASM]
+  ONNX --> Smooth[Confidence and temporal smoothing]
+  Smooth --> Builder[Sentence builder]
+  MP --> Overlay[Landmark and skeleton overlay]
+  ONNX --> UI[Prediction, top 3, latency]
+  Smooth --> Builder
+```
+
+The classifier model, labels, and metadata are not present yet, so the current verified behavior is the static production build and local asset packaging. Webcam, browser-specific camera permissions, and predictions still need manual verification after the model files are added.

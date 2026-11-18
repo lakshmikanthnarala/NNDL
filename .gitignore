@@ -13,3 +13,6 @@ __pycache__/
 .env.*
 !.env.example
 *.log
+
+# Vite production output
+dist/
