@@ -37,9 +37,17 @@ def preprocess_image(image: Image.Image | np.ndarray) -> np.ndarray:
     else:
         array = np.asarray(image)
         if array.ndim == 3:
-            if array.shape[2] == 4:
-                array = cv2.cvtColor(array, cv2.COLOR_RGBA2RGB)
-            gray = cv2.cvtColor(array, cv2.COLOR_RGB2GRAY)
+            if array.shape[2] == 1:
+                gray = array[:, :, 0]
+            else:
+                if not np.issubdtype(array.dtype, np.number) or not np.isfinite(array).all():
+                    raise ValueError("Image pixels must be finite numeric values.")
+                if array.max(initial=0) <= 1:
+                    array = array * 255
+                array = np.clip(array, 0, 255).astype(np.uint8)
+                if array.shape[2] == 4:
+                    array = cv2.cvtColor(array, cv2.COLOR_RGBA2RGB)
+                gray = cv2.cvtColor(array, cv2.COLOR_RGB2GRAY)
         elif array.ndim == 2:
             gray = array
         else:

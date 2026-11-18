@@ -15,7 +15,9 @@ class ModelSmokeTests(unittest.TestCase):
         if not DEFAULT_MODEL.is_file():
             self.skipTest("Train the model first with `python train_model.py`.")
         model = load_predictor(DEFAULT_MODEL)
-        image = Image.fromarray(np.zeros((28, 28), dtype=np.uint8), mode="L")
+        rng = np.random.default_rng(42)
+        pixels = rng.integers(40, 220, size=(28, 28), dtype=np.uint8)
+        image = Image.fromarray(pixels)
         letter, confidence, processed = predict_image(image, model)
         self.assertIn(letter, CLASSES)
         self.assertTrue(0.0 <= confidence <= 1.0)

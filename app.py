@@ -236,7 +236,14 @@ def page_translate() -> None:
         st.markdown('<div class="section-label">01 / IMAGE INPUT</div>', unsafe_allow_html=True)
         camera_tab, upload_tab = st.tabs(["WEBCAM SNAPSHOT", "UPLOAD IMAGE"])
         with camera_tab:
-            capture = st.camera_input("Position one hand clearly in the frame")
+            st.info(
+                "Allow camera access in the browser prompt before capturing a hand sign.",
+                icon="📷",
+            )
+            capture = st.camera_input(
+                "Position one hand clearly in the frame",
+                help="SignSpeak asks the browser for camera permission and uses only one captured frame.",
+            )
             if capture is not None and st.button("Run inference", key="camera_predict", use_container_width=True):
                 render_prediction(Image.open(capture).convert("RGB"), "camera")
         with upload_tab:

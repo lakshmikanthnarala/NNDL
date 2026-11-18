@@ -41,10 +41,10 @@ def load_dataset(path: Path) -> tuple[np.ndarray, np.ndarray]:
             "and place both files in the dataset/ folder."
         )
     frame = pd.read_csv(path)
-    expected_columns = {"label", *(f"pixel{i}" for i in range(784))}
+    expected_columns = {"label", *(f"pixel{i}" for i in range(1, 785))}
     if set(frame.columns) != expected_columns or len(frame.columns) != 785:
         raise ValueError(
-            f"{path.name} must contain a label column and pixel0 through pixel783."
+            f"{path.name} must contain a label column and pixel1 through pixel784."
         )
     labels = frame["label"].to_numpy(dtype=np.int64)
     if not set(np.unique(labels)).issubset(DATASET_LABELS):

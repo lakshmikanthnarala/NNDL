@@ -30,7 +30,7 @@ Python, TensorFlow/Keras, CNN, Streamlit, OpenCV, NumPy, Pandas, Pillow, scikit-
 
 3. If Kaggle requires account authentication, use Kaggle's own download instructions or download the files in a browser. Do not commit credentials or dataset files to a public repository.
 
-The CSVs contain a `label` column and 784 pixel columns (`pixel0`–`pixel783`). Labels cover integers 0–24 except 9: 0–8 map to A–I and 10–24 map to K–Y. J and Z are excluded because they require movement. The training code remaps the remaining labels to contiguous output indices 0–23.
+The CSVs contain a `label` column and 784 pixel columns (`pixel1`–`pixel784`). Labels cover integers 0–24 except 9: 0–8 map to A–I and 10–24 map to K–Y. J and Z are excluded because they require movement. The training code remaps the remaining labels to contiguous output indices 0–23.
 
 ## Install and run on Windows
 
