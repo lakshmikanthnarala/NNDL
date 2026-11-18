@@ -25,63 +25,62 @@ st.markdown(
     """
     <style>
     @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
-    :root { --navy:#07101f; --panel:#0d1a2d; --panel2:#111f33; --line:#1a2d48; --blue:#45aaff; --cyan:#59d8e8; --muted:#91a3bb; }
-    * { scrollbar-width:thin; scrollbar-color:#25415f transparent; }
-    .stApp { background:radial-gradient(circle at 58% -10%,#102844 0,#091525 38%,#070e1a 78%); color:#dceaff; }
+    :root {
+      --base:#0c1015; --sidebar:#090d12; --panel:#151a20; --panel-raised:#1a2027;
+      --line:#252d35; --cyan:#39d9ef; --cyan-soft:#a3f4fc; --text:#e9eef2;
+      --muted:#89949e; --green:#77e4c1; --red:#ff8f91;
+    }
+    .stApp { background:var(--base); color:var(--text); }
     html, body, [class*="css"] { font-family:'DM Sans',sans-serif; }
-    h1,h2,h3,h4,p,span,button,label { color:#dceaff; }
-    h1,h2,h3 { font-family:'DM Sans',sans-serif !important; }
-    [data-testid="stHeader"] { background:transparent; height:0; }
-    [data-testid="stMainBlockContainer"] { max-width:none; padding:42px 18px 28px 18px; }
-    [data-testid="stSidebar"] {
-        width:188px !important; min-width:188px; background:#091425;
-        border-right:1px solid #182a44;
+    h1,h2,h3 { color:#f3f6f7 !important; letter-spacing:-.035em; }
+    h1 { font-size:2rem !important; }
+    [data-testid="stHeader"] { background:transparent; }
+    [data-testid="stMain"] .block-container { max-width:1600px; padding:1.55rem 2rem 3rem; }
+    [data-testid="stSidebar"] { background:var(--sidebar); border-right:1px solid #1d242b; }
+    [data-testid="stSidebar"] > div:first-child { padding-top:1.2rem; }
+    [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] p { color:var(--muted); }
+    [data-testid="stSidebar"] [data-testid="stRadio"] label { color:#b8c1c8; }
+    [data-testid="stSidebar"] [data-testid="stRadio"] label:hover { color:var(--cyan); }
+    .brand-lockup { display:flex; align-items:center; gap:11px; margin:4px 0 2px; }
+    .brand-mark { display:grid; place-items:center; width:34px; height:34px; border:1px solid #277f89; border-radius:7px; color:var(--cyan); background:#102126; font:700 12px 'Space Mono',monospace; }
+    .brand-name { color:#f0f4f5; font-weight:700; letter-spacing:.02em; }
+    .brand-caption { color:#77838c; font:9px 'Space Mono',monospace; letter-spacing:.1em; margin-top:3px; }
+    [data-testid="stMetric"] { background:var(--panel); border:1px solid var(--line); padding:15px 18px; border-radius:8px; }
+    [data-testid="stMetricLabel"] { color:var(--muted); }
+    [data-testid="stMetricValue"] { color:var(--cyan); font-family:'Space Mono',monospace; }
+    [data-testid="stTabs"] [role="tablist"] { gap:8px; border-bottom:1px solid var(--line); }
+    [data-testid="stTabs"] button[role="tab"] { color:#9ba6af; }
+    [data-testid="stTabs"] button[role="tab"][aria-selected="true"] { color:var(--cyan); border-bottom-color:var(--cyan); }
+    [data-testid="stFileUploader"], [data-testid="stCameraInput"] { background:#10151a; border:1px solid var(--line); border-radius:8px; }
+    [data-testid="stImage"] img { border-radius:6px; }
+    [data-testid="stAlert"] { border-radius:8px; }
+    .hero { position:relative; overflow:hidden; padding:28px 30px; border:1px solid #2a3940; border-radius:10px; background:linear-gradient(112deg,#17232a 0%,#11171d 68%,#14232a 100%); margin-bottom:20px; }
+    .hero:after { content:""; position:absolute; width:220px; height:220px; right:6%; top:-135px; border:1px solid #2b6971; border-radius:50%; box-shadow:0 0 0 24px #172a2c,0 0 0 25px #23434a,0 0 0 50px #152327,0 0 0 51px #20353a; opacity:.5; }
+    .hero h1 { font-size:2.6rem !important; margin:.4rem 0 !important; }
+    .eyebrow { color:var(--cyan); text-transform:uppercase; letter-spacing:.13em; font-family:'Space Mono',monospace; font-weight:700; font-size:.68rem; }
+    .muted { color:#a4afb7; }
+    .card { padding:19px; border-radius:8px; border:1px solid var(--line); background:var(--panel); min-height:130px; }
+    .card h3 { margin:.55rem 0 .35rem; font-size:1.12rem; }
+    .status-strip { display:flex; flex-wrap:wrap; gap:0; align-items:center; background:#11161b; border:1px solid var(--line); border-radius:8px; margin:0 0 18px; }
+    .status-item { flex:1; min-width:150px; padding:12px 16px; border-right:1px solid var(--line); }
+    .status-item:last-child { border-right:0; }
+    .status-label { display:block; margin-bottom:5px; color:var(--muted); text-transform:uppercase; letter-spacing:.1em; font:10px 'Space Mono',monospace; }
+    .status-value { color:#e4ebef; font:12px 'Space Mono',monospace; }
+    .status-value.accent { color:var(--cyan); }
+    .section-label { color:#9ba6af; font:11px 'Space Mono',monospace; text-transform:uppercase; letter-spacing:.1em; }
+    .result-panel { min-height:282px; padding:20px; border:1px solid var(--line); border-radius:8px; background:var(--panel); }
+    .result-letter { color:var(--cyan); font:700 5rem 'Space Mono',monospace; line-height:1; }
+    .result-empty { display:flex; min-height:190px; align-items:center; justify-content:center; text-align:center; color:var(--muted); border:1px dashed #303a42; border-radius:7px; padding:20px; }
+    div.stButton > button, div.stDownloadButton > button { border-radius:6px; border:1px solid #2599a6; background:#087c88; color:#f2feff; font-weight:700; }
+    div.stButton > button:hover, div.stDownloadButton > button:hover { border-color:var(--cyan); background:#0995a3; color:white; }
+    div.stButton > button:disabled { border-color:#303940; background:#1b2228; color:#65717a; }
+    code { color:var(--cyan-soft) !important; background:#10151a !important; }
+    @media (max-width: 760px) {
+      [data-testid="stMain"] .block-container { padding:1rem 1rem 2rem; }
+      .hero { padding:23px 20px; }
+      .hero h1 { font-size:2.15rem !important; }
+      .status-item { min-width:50%; }
     }
-    [data-testid="stSidebarUserContent"] { padding:10px 9px; }
-    [data-testid="stSidebar"] [data-testid="stRadio"] { margin-top:10px; }
-    [data-testid="stSidebar"] [role="radiogroup"] { gap:2px; }
-    [data-testid="stSidebar"] label > div:first-child { display:none; }
-    [data-testid="stSidebar"] label { border-radius:5px; padding:7px 8px; margin:1px 0; color:#9db0c8; }
-    [data-testid="stSidebar"] label:has(input:checked) {
-        background:linear-gradient(90deg,#176f9d55,#42a9ca22); color:#69cef0;
-        border-left:2px solid #5dcbec;
-    }
-    [data-testid="stSidebar"] [data-testid="stMarkdownContainer"] p { font-size:12px; }
-    [data-testid="stMetric"] { background:#0d1a2d; border:1px solid #1b2d48; padding:10px; border-radius:5px; }
-    [data-testid="stMetricValue"] { color:#74c3ff; font-family:'Space Mono',monospace; }
-    .dashboard-title { display:flex; align-items:center; height:31px; margin:-20px 0 12px; border-bottom:1px solid #1a2d48; }
-    .dashboard-title h1 { font-size:17px !important; margin:0; letter-spacing:.12em; text-transform:uppercase; }
-    .panel { background:linear-gradient(145deg,#101f34bb,#091426cc); border:1px solid #192e49; border-radius:7px; overflow:hidden; }
-    .panel-head { height:38px; display:flex; align-items:center; justify-content:space-between; padding:0 12px; border-bottom:1px solid #1a2d48; background:#0d1a2eb3; }
-    .panel-head strong { font-size:11px; text-transform:uppercase; letter-spacing:.10em; color:#acc4dc; }
-    .tag { color:#55ceea; border:1px solid #23516b; background:#123049; border-radius:3px; padding:3px 7px; font-size:9px; text-transform:uppercase; letter-spacing:.08em; }
-    .live-dot { width:6px;height:6px;border-radius:50%;background:#56dbef;display:inline-block;box-shadow:0 0 9px #56dbef;margin-right:6px; }
-    .hero { padding:34px 36px; border:1px solid #24446a; border-radius:8px; background:linear-gradient(120deg,#17365bcc,#0c1b31cc); margin-bottom:22px; }
-    .eyebrow { color:#83bcff; text-transform:uppercase; letter-spacing:.14em; font-weight:700; font-size:.72rem; }
-    .muted { color:#91a3bb; }
-    .card { padding:16px; border-radius:7px; border:1px solid #1d3451; background:#0d1a2dbb; min-height:130px; }
-    div.stButton > button, div.stDownloadButton > button { border-radius:5px; border:1px solid #2c75b5; background:#145d94; color:#edf7ff; font-weight:700; min-height:34px; }
-    div.stButton > button:hover, div.stDownloadButton > button:hover { border-color:#66cdf2; background:#1975ad; color:white; }
-    [data-testid="stFileUploader"], [data-testid="stCameraInput"] { background:#0c192a; border:1px dashed #284560; border-radius:7px; }
-    [data-testid="stTabs"] [data-baseweb="tab-list"] { background:#0b1728; border:1px solid #1a2d48; }
-    [data-testid="stTabs"] [data-baseweb="tab"] { color:#91a3bb; }
-    [data-testid="stTabs"] [aria-selected="true"] { color:#66d3ef; border-bottom-color:#66d3ef; }
-    .signal-bar { height:3px; background:#17324b; margin:7px 0; border-radius:4px; overflow:hidden; }
-    .signal-bar i { display:block;height:100%;background:linear-gradient(90deg,#3cc5df,#7ccfff);box-shadow:0 0 8px #63c8ef; }
-    .mono { font-family:'Space Mono',monospace; }
-    .feed-placeholder { height:300px; display:flex; align-items:center; justify-content:center; position:relative; overflow:hidden;
-        background:linear-gradient(rgba(45,75,110,.10) 1px,transparent 1px),linear-gradient(90deg,rgba(45,75,110,.10) 1px,transparent 1px),linear-gradient(135deg,#14243a,#091525);
-        background-size:32px 32px,32px 32px,100% 100%; }
-    .feed-placeholder:after { content:""; position:absolute; inset:26px; border:1px solid #1d405e; opacity:.5; }
-    .hand-glyph { font-size:100px; filter:grayscale(1) contrast(.7); opacity:.45; z-index:1; }
-    .small-label { color:#71889f; font-size:9px; text-transform:uppercase; letter-spacing:.12em; }
-    .stat-grid { display:grid; grid-template-columns:repeat(4,1fr); gap:5px; margin:8px 0; }
-    .stat { background:#0a1728; border:1px solid #1a2d48; padding:8px; min-height:48px; }
-    .stat b { display:block; color:#78baff; font-size:11px; margin-top:4px; }
-    .result-name { font-family:'Georgia',serif; font-size:28px; letter-spacing:.05em; color:#dcecff; margin:6px 0; }
-    .candidate { display:grid; grid-template-columns:22px 1fr 48px; gap:8px; align-items:center; height:25px; font-size:10px; border-bottom:1px solid #14243a; }
-    .log-line { font-family:'Space Mono',monospace; font-size:8px; color:#7890a9; border-bottom:1px solid #14243a; padding:5px 0; }
-    .log-line:last-child { border:0; }
     </style>
     """,
     unsafe_allow_html=True,
@@ -96,6 +95,7 @@ def get_predictor():
 def render_prediction(image: Image.Image, key: str) -> None:
     st.session_state["latest_prediction"] = None
     st.session_state["latest_confidence"] = None
+    st.session_state["latest_processed"] = None
     try:
         predictor = get_predictor()
         letter, confidence, processed = predict_image(image, predictor)
@@ -110,7 +110,7 @@ def render_prediction(image: Image.Image, key: str) -> None:
         return
 
     if confidence < 0.25:
-        st.image(processed, caption="Preprocessed 28 × 28 input", width=210)
+        st.session_state["latest_processed"] = processed
         st.error(
             f"The model is uncertain (highest class score: {confidence:.1%}). "
             "Try a clear, centered handshape against a plain background."
@@ -120,16 +120,6 @@ def render_prediction(image: Image.Image, key: str) -> None:
     st.session_state["latest_confidence"] = confidence
     st.session_state["latest_processed"] = processed
     st.session_state["prediction_source"] = key
-    left, right = st.columns([1, 2])
-    with left:
-        st.image(processed, caption="Preprocessed 28 × 28 input", width=210)
-    with right:
-        st.markdown(f"### Prediction: **{letter}**")
-        st.progress(confidence, text=f"Model confidence: {confidence:.1%}")
-        st.caption(
-            "Confidence is the CNN softmax score, not a guarantee of correctness. "
-            "The model recognizes isolated, static signs from Sign Language MNIST."
-        )
 
 
 def page_home() -> None:
@@ -146,20 +136,34 @@ def page_home() -> None:
     st.markdown(
         """
         <div class="hero">
-          <div class="eyebrow">AI-powered accessibility</div>
-          <h1>SignSpeak</h1>
-          <p style="font-size:1.16rem;color:#c5d5e9">
-            Turn a captured ASL handshape into a letter, one sign at a time.
+          <div class="eyebrow">SIGN SPEAK&nbsp; / &nbsp;VISION WORKSPACE</div>
+          <h1>Make every handshape understood.</h1>
+          <p style="font-size:1.02rem;color:#b5c1c8;max-width:610px">
+            A focused ASL alphabet studio. Capture one sign, review the model's confidence,
+            then choose what becomes part of your message.
           </p>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+    ready_label = "● MODEL READY" if MODEL_PATH.exists() else "● MODEL NOT TRAINED"
+    ready_class = "accent" if MODEL_PATH.exists() else ""
+    st.markdown(
+        f"""
+        <div class="status-strip">
+          <div class="status-item"><span class="status-label">System</span><span class="status-value {ready_class}">{ready_label}</span></div>
+          <div class="status-item"><span class="status-label">Recognition scope</span><span class="status-value">24 STATIC LETTERS</span></div>
+          <div class="status-item"><span class="status-label">Input</span><span class="status-value">WEBCAM / IMAGE UPLOAD</span></div>
+          <div class="status-item"><span class="status-label">Output</span><span class="status-value">USER-CONTROLLED TEXT</span></div>
         </div>
         """,
         unsafe_allow_html=True,
     )
     a, b, c = st.columns(3)
     for col, number, title, copy in [
-        (a, "01", "Capture", "Take a webcam photo or upload a clear hand-gesture image."),
-        (b, "02", "Recognize", "A trained CNN classifies the handshape as one of 24 static letters."),
-        (c, "03", "Compose", "Add recognized letters to your text only when you choose."),
+        (a, "01 / INPUT", "Capture a sign", "Use a webcam snapshot or upload a clear handshape image."),
+        (b, "02 / INFERENCE", "Review the result", "See the predicted letter, confidence, and model input preview."),
+        (c, "03 / COMPOSE", "Build your message", "Add recognized letters to your text only when you choose."),
     ]:
         with col:
             st.markdown(
@@ -187,125 +191,94 @@ def page_home() -> None:
 
 
 def page_translate() -> None:
-    st.markdown('<div class="dashboard-title"><h1>Vision Command Center</h1></div>', unsafe_allow_html=True)
+    model_ready = MODEL_PATH.exists()
+    model_status = "MODEL READY" if model_ready else "MODEL NOT TRAINED"
+    status_class = "accent" if model_ready else ""
     st.markdown(
-        '<div class="stat-grid">'
-        '<div class="stat"><span class="small-label">GPU Accel</span><b>RTX 4090</b></div>'
-        '<div class="stat"><span class="small-label">Inference</span><b>TensorFlow</b></div>'
-        '<div class="stat"><span class="small-label">Pipeline</span><b>60 FPS</b></div>'
-        '<div class="stat"><span class="small-label">Latency</span><b>12.8 ms</b></div>'
-        '</div>',
+        """
+        <div style="display:flex;justify-content:space-between;align-items:flex-end;gap:12px;margin-bottom:16px">
+          <div><div class="eyebrow">VISION WORKSPACE / SINGLE-FRAME MODE</div>
+          <h1 style="margin:.35rem 0">Live sign recognition</h1>
+          <div class="muted">Capture or upload one handshape to run ASL alphabet inference.</div></div>
+          <div class="section-label">● &nbsp;SESSION ACTIVE</div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
+    st.markdown(
+        f"""
+        <div class="status-strip">
+          <div class="status-item"><span class="status-label">System status</span><span class="status-value {status_class}">● &nbsp;{model_status}</span></div>
+          <div class="status-item"><span class="status-label">Model</span><span class="status-value">CNN / 24 CLASSES</span></div>
+          <div class="status-item"><span class="status-label">Input format</span><span class="status-value">28 × 28 GRAYSCALE</span></div>
+          <div class="status-item"><span class="status-label">Low-confidence gate</span><span class="status-value">&lt; 25% REJECTED</span></div>
+        </div>
+        """,
         unsafe_allow_html=True,
     )
 
-    left, center, right = st.columns([1.15, 2.25, 1.25], gap="small")
-
-    with left:
-        st.markdown(
-            '<div class="panel"><div class="panel-head"><strong>Signal source</strong><span class="tag">Live</span></div>',
-            unsafe_allow_html=True,
-        )
-        camera_tab, upload_tab = st.tabs(["Camera", "Upload"])
+    input_col, result_col = st.columns([1.55, 1], gap="medium")
+    with input_col:
+        st.markdown('<div class="section-label">01 / IMAGE INPUT</div>', unsafe_allow_html=True)
+        camera_tab, upload_tab = st.tabs(["WEBCAM SNAPSHOT", "UPLOAD IMAGE"])
         with camera_tab:
-            capture = st.camera_input("Capture", label_visibility="collapsed")
-            if capture is not None and st.button("Analyze frame", key="camera_predict", use_container_width=True):
+            capture = st.camera_input("Position one hand clearly in the frame")
+            if capture is not None and st.button("Run inference", key="camera_predict", use_container_width=True):
                 render_prediction(Image.open(capture).convert("RGB"), "camera")
         with upload_tab:
-            uploaded = st.file_uploader("Image", type=["png", "jpg", "jpeg"], label_visibility="collapsed")
+            uploaded = st.file_uploader(
+                "Choose a PNG, JPG, or JPEG image",
+                type=["png", "jpg", "jpeg"],
+                accept_multiple_files=False,
+            )
             if uploaded is not None:
                 try:
                     image = Image.open(uploaded).convert("RGB")
-                    st.image(image, use_container_width=True)
-                    if st.button("Analyze image", key="upload_predict", use_container_width=True):
+                    st.image(image, caption="Input image", use_container_width=True)
+                    if st.button("Run inference", key="upload_predict", use_container_width=True):
                         render_prediction(image, "upload")
                 except (OSError, ValueError) as error:
-                    st.error(f"Could not open image: {error}")
-        st.markdown('</div>', unsafe_allow_html=True)
+                    st.error(f"This image could not be opened: {error}")
 
-        st.markdown(
-            '<div class="panel" style="margin-top:8px"><div class="panel-head"><strong>Runtime</strong><span class="tag">Active</span></div>'
-            '<div style="padding:10px"><span class="small-label">Model load</span><div class="signal-bar"><i style="width:88%"></i></div>'
-            '<span class="small-label">Inference queue</span><div class="signal-bar"><i style="width:64%"></i></div></div></div>',
-            unsafe_allow_html=True,
-        )
-
-    with center:
-        st.markdown(
-            '<div class="panel"><div class="panel-head"><strong>Active vision feed</strong>'
-            '<span><span class="live-dot"></span><span class="tag">Stream</span></span></div>',
-            unsafe_allow_html=True,
-        )
-        capture = st.session_state.get("_current_capture")
-        if st.session_state.get("latest_processed") is not None:
-            st.image(
-                st.session_state["latest_processed"],
-                use_container_width=True,
-                caption="Preprocessed 28 × 28 model input",
+    with result_col:
+        st.markdown('<div class="section-label">02 / CLASSIFIER OUTPUT</div><br>', unsafe_allow_html=True)
+        letter = st.session_state.get("latest_prediction")
+        confidence = st.session_state.get("latest_confidence")
+        processed = st.session_state.get("latest_processed")
+        if letter:
+            st.markdown(
+                f"""
+                <div class="result-panel">
+                  <div class="eyebrow">PREDICTED ASL LETTER</div>
+                  <div class="result-letter">{letter}</div>
+                  <div style="color:#a7b3bb;margin-top:8px">Static alphabet class</div>
+                </div>
+                """,
+                unsafe_allow_html=True,
             )
+            st.progress(confidence, text=f"Model confidence · {confidence:.1%}")
+            if processed is not None:
+                st.image(processed, caption="Normalized 28 × 28 model input", width=160)
+            st.caption(
+                "Confidence is the CNN softmax score, not a guarantee of correctness. "
+                "This model recognizes isolated static signs only."
+            )
+        elif processed is not None:
+            st.markdown(
+                '<div class="result-empty">Low confidence — try a centered handshape '
+                'against a plain, well-lit background.</div>',
+                unsafe_allow_html=True,
+            )
+            st.image(processed, caption="Normalized 28 × 28 model input", width=160)
         else:
             st.markdown(
-                '<div class="feed-placeholder"><div class="hand-glyph">☝</div></div>',
+                '<div class="result-empty">Your prediction will appear here after you '
+                'capture or upload a handshape.</div>',
                 unsafe_allow_html=True,
             )
-        st.markdown(
-            '<div style="height:35px;display:flex;align-items:center;justify-content:space-between;padding:0 10px">'
-            '<span class="small-label">Snapshot  /  Export frame</span>'
-            '<span class="tag">Landmarks 21/21</span></div></div>',
-            unsafe_allow_html=True,
-        )
-
-        st.markdown(
-            '<div class="panel" style="margin-top:8px"><div class="panel-head"><strong>Gesture interpretation</strong>'
-            '<span class="tag">Speak</span></div><div style="padding:12px">'
-            '<div class="small-label">Captured sequence</div>'
-            '<p class="mono" style="font-size:17px;margin:8px 0">HELLO  /  READY FOR TRANSLATION</p>'
-            '<div class="signal-bar"><i style="width:42%"></i></div>'
-            '<span class="small-label">Gesture hold: 1.4s &nbsp;&nbsp; Autocap stable</span></div></div>',
-            unsafe_allow_html=True,
-        )
-
-    with right:
-        letter = st.session_state.get("latest_prediction")
-        confidence = st.session_state.get("latest_confidence", 0.0)
-        st.markdown(
-            '<div class="panel"><div class="panel-head"><strong>Active classification</strong>'
-            '<span class="tag">CNN</span></div>',
-            unsafe_allow_html=True,
-        )
-        st.markdown(
-            f'<div style="padding:14px"><span class="small-label">Primary class</span>'
-            f'<div class="result-name">{letter if letter else "WAITING"}</div>'
-            f'<span class="mono" style="color:#66d3ef;font-size:22px">{confidence:.1%}</span>'
-            f'<span class="small-label"> confidence</span>'
-            f'<div class="signal-bar"><i style="width:{confidence * 100:.1f}%"></i></div></div>',
-            unsafe_allow_html=True,
-        )
-        st.markdown('</div>', unsafe_allow_html=True)
-
-        st.markdown(
-            '<div class="panel" style="margin-top:8px"><div class="panel-head"><strong>Top candidates</strong>'
-            '<span class="tag">Top 5</span></div><div style="padding:8px">',
-            unsafe_allow_html=True,
-        )
-        candidates = [(letter or "A", confidence)] if letter else [("A", 0.0), ("B", 0.0), ("C", 0.0), ("D", 0.0), ("E", 0.0)]
-        for index, (name, score) in enumerate(candidates, 1):
-            st.markdown(
-                f'<div class="candidate"><span>{index}</span><span>{name}</span>'
-                f'<span class="mono" style="text-align:right">{score:.1%}</span></div>',
-                unsafe_allow_html=True,
-            )
-        st.markdown('</div></div>', unsafe_allow_html=True)
-
-        st.markdown(
-            '<div class="panel" style="margin-top:8px"><div class="panel-head"><strong>Inference log</strong>'
-            '<span class="live-dot"></span></div><div style="padding:8px">'
-            '<div class="log-line">[14:22:01] Frame acquired</div>'
-            '<div class="log-line">[14:22:01] Hand region detected</div>'
-            '<div class="log-line">[14:22:01] 21 landmarks normalized</div>'
-            '<div class="log-line">[14:22:01] Softmax inference complete</div>'
-            '</div></div>',
-            unsafe_allow_html=True,
-        )
+        if letter:
+            st.markdown('<div class="section-label" style="margin-top:22px">03 / NEXT STEP</div>', unsafe_allow_html=True)
+            st.caption("When you are ready, add this letter in Text Builder. Nothing is appended automatically.")
 
 
 def page_text_builder() -> None:
@@ -425,20 +398,21 @@ def page_about() -> None:
 
 
 st.sidebar.markdown(
-    '<div style="height:38px;border-bottom:1px solid #1a2d48;margin:-4px -9px 8px;padding:8px 12px">'
-    '<span style="font-size:12px;text-transform:uppercase;letter-spacing:.14em;color:#d7e8fa">SignSpeak</span>'
-    '<span style="float:right;color:#61cce8;font-size:9px">● Live</span></div>',
+    '<div class="brand-lockup"><div class="brand-mark">SS</div><div>'
+    '<div class="brand-name">SignSpeak</div>'
+    '<div class="brand-caption">ASL VISION STUDIO</div></div></div>',
     unsafe_allow_html=True,
 )
+st.sidebar.write("")
 pages = ["Home", "Live & Upload", "Text Builder", "Model Performance", "About Project"]
 if st.session_state.pop("navigate_to_translation", False):
     st.session_state["navigation_page"] = "Live & Upload"
 if st.session_state.get("navigation_page") not in pages:
-    st.session_state["navigation_page"] = "Live & Upload"
+    st.session_state["navigation_page"] = "Home"
 selected_page = st.sidebar.radio("Navigate", pages, key="navigation_page")
 st.sidebar.divider()
-st.sidebar.markdown("**Model status**")
-st.sidebar.caption("Trained model found" if MODEL_PATH.exists() else "Train model to enable predictions")
+st.sidebar.markdown('<div class="section-label">MODEL STATUS</div>', unsafe_allow_html=True)
+st.sidebar.caption("● Trained model found" if MODEL_PATH.exists() else "○ Train model to enable predictions")
 
 {
     "Home": page_home,
