@@ -60,13 +60,13 @@ Training evaluates the best validation checkpoint on the separate Kaggle test CS
 - `outputs/accuracy.png`, `outputs/loss.png`, `outputs/confusion_matrix.png`
 - `outputs/classification_report.txt`, `outputs/model_summary.txt`
 
-Start the website from the project directory:
+Start the website by double-clicking `run_website.bat`, or run this command from the project directory:
 
 ```powershell
-streamlit run app.py
+.\.venv\Scripts\python.exe -m streamlit run app.py
 ```
 
-Streamlit opens the local application in a browser. Allow camera access to use **Webcam capture**. The app processes one captured image only; it does not claim continuous real-time recognition. Image upload accepts PNG, JPG, and JPEG.
+Streamlit opens the local application in your browser at `http://localhost:8501`. Keep the terminal window open while using the site. The website can open before training, but predictions require the trained model; add the dataset CSVs and run `python train_model.py` first. Allow camera access to use **Webcam capture**. The app processes one captured image only; it does not claim continuous real-time recognition. Image upload accepts PNG, JPG, and JPEG.
 
 The same install, training, and run commands work in Google Colab after uploading or mounting the two CSV files into `dataset/`. In Colab, use `!python train_model.py` and `!streamlit run app.py`; expose Streamlit with an approved Colab-compatible tunnel if a browser preview is needed.
 

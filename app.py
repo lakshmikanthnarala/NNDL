@@ -7,8 +7,6 @@ import streamlit as st
 import streamlit.components.v1 as components
 from PIL import Image
 
-from predict import load_predictor, predict_image
-
 
 ROOT = Path(__file__).resolve().parent
 MODEL_PATH = ROOT / "models" / "sign_language_model.keras"
@@ -89,6 +87,8 @@ st.markdown(
 
 @st.cache_resource(show_spinner="Loading the trained SignSpeak model...")
 def get_predictor():
+    from predict import load_predictor
+
     return load_predictor(MODEL_PATH)
 
 
@@ -96,13 +96,27 @@ def render_prediction(image: Image.Image, key: str) -> None:
     st.session_state["latest_prediction"] = None
     st.session_state["latest_confidence"] = None
     st.session_state["latest_processed"] = None
+    if not MODEL_PATH.is_file():
+        st.error(
+            "The trained model is not available yet. Put the Kaggle CSV files in "
+            "`dataset/` and run `python train_model.py` first."
+        )
+        return
     try:
+        from predict import predict_image
+
         predictor = get_predictor()
         letter, confidence, processed = predict_image(image, predictor)
     except FileNotFoundError:
         st.error(
             "The trained model is not available yet. Put the Kaggle CSV files in "
             "`dataset/` and run `python train_model.py` first."
+        )
+        return
+    except ModuleNotFoundError as error:
+        st.error(
+            f"The prediction dependency `{error.name}` is missing. Install the project "
+            "dependencies with `python -m pip install -r requirements.txt`."
         )
         return
     except (ValueError, RuntimeError) as error:
