@@ -1,33 +1,33 @@
 # SignVision
 
-The browser frontend is kept to three files: `public/index.html`, `public/styles.css`, and `public/script.js`. The Python model, dataset, and evaluation artifacts remain separate project files.
+The browser frontend has three source files: `index.html`, `styles.css`, and `script.js`. Camera capture, MediaPipe hand tracking, ONNX inference, and sentence building run in the browser. The MediaPipe task and both WASM runtimes are bundled locally under `public/`; camera frames are not sent to a Python server.
 
 ## Run locally
 
-Install the Python dependencies, then run the app:
-
 ```powershell
-py -3.11 -m venv .venv
-.\.venv\Scripts\Activate.ps1
-python -m pip install -r requirements.txt
 npm install
 npm run dev
 ```
 
-Open `http://127.0.0.1:8000`. Camera access requires permission. Capture a frame or upload a PNG/JPEG to send it to the local Keras model. The result panel shows the returned class, confidence, top three classes, and measured inference time.
+Open the local Vite URL printed in the terminal. Camera access requires `localhost` or HTTPS and browser permission. Use Start camera to see the 21 hand landmarks. Classification stays disabled until all three matching files are placed in `public/models/`:
 
-The model was trained on 28x28 grayscale Sign Language MNIST crops. It does not extract hand landmarks from live video, and its test-set metrics do not measure webcam accuracy. The dashboard labels unavailable measurements as N/A.
+- `signvision_model.onnx`
+- `labels.json`
+- `model_metadata.json`
 
-## Cloudflare Pages
+The model must accept a float32 tensor shaped `[1, 63]` containing 21 wrist-relative XYZ landmarks, divided by the maximum Euclidean distance from the wrist. Metadata must include `input_name`, `output_name`, `input_shape`, `output_shape`, and `preprocessing` with `normalization: "relative_to_wrist"`, `scaling_factor: "max_euclidean_distance_from_wrist"`, and both invariance flags set to true. Labels must be an ordered array or an index-to-label object; `metadata.classes` must use the same order. The UI reads architecture, dataset distribution, and evaluation values from supplied metadata and does not invent missing measurements.
 
-Pages serves the static frontend only; it does not host the Python inference API. Build output is the `public` directory.
+## Build and Cloudflare Pages
 
 ```powershell
+npm run build
 npm run pages:dev
 npx wrangler login
 npm run deploy
 ```
 
-## Project data
+Vite writes the static site to `dist/`; Cloudflare Pages serves that directory. Add the model files before building to include them in the deployment. No Python backend is used by this frontend.
 
-The included CNN has two convolution and max-pooling blocks, a 128-unit dense layer, and 24 static classes (A-I and K-Y). J and Z are excluded because their signs require motion. Evaluation images and results are stored under `outputs/` and copied to `public/` for the dashboard.
+## Existing training artifacts
+
+The repository's existing Keras model is a 24-class grayscale image classifier and does not match this landmark-based ONNX input. It is not substituted for the uploaded ONNX model. Its training and evaluation files remain available separately in the repository.
